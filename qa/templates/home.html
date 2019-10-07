@@ -1,0 +1,144 @@
+{% extends 'layout.html' %}
+{% load bootstrap3 staticfiles %}
+
+{% block content %}
+<div class="pull-right">
+    <span id="success-add-alert" class="alert alert-success alert-dismissible fade in"
+     style="margin-right: 5px; display: none;">
+            Question Added Successfully
+    </span>
+    <span id="error-add-alert" class="alert alert-error alert-dismissible fade in"
+     style="margin-right: 5px; display: none;">
+            Error trying to create a Question. Please, try again
+    </span>
+</div>
+
+<div class="container">
+
+<div class="col-md-8">
+
+  <ul class="nav nav-tabs nav-justified">
+    <li role="presentation" class="active"><a href="#latest" aria-controls="latest" role="tab" data-toggle="tab" onclick="select('latest')"><span class="glyphicon glyphicon-th-list" aria-hidden="true"></span> Latest</a></li>
+    <li role="presentation"><a href="#unans" aria-controls="unans" role="tab" data-toggle="tab" onclick="select('unans')"><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span> Unanswered</a></li>
+    <li role="presentation"><a href="#likes" aria-controls="likes" role="tab" data-toggle="tab" onclick="select('likes')"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> Likes</a></li>
+  </ul>
+
+  <div class="tab-content">
+    <div id="latest" role="tabpanel" class="tab-pane active"></div>
+
+    <div id="unans" role="tabpanel" class="tab-pane"></div>
+
+    <div id="likes" role="tabpanel" class="tab-pane"></div>
+
+    <hr>
+
+    <!-- <div class="pagination">
+      <span class="step-links">
+
+        <a href="?page=">< Previous | </a>
+
+
+        <span class="current">
+        </span>
+
+        <a href="?page="> | Next ></a>
+      </span>
+    </div> -->
+
+    </div>
+</div>
+
+<div class="col-md-4">
+
+  {% if user.is_authenticated %}
+  <a class="btn btn-primary" data-toggle="modal" data-target="#askQuestion">+ Ask Question</a>
+  {% endif %}
+
+  <hr>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <h4>Total Questions: <span id="total-questions"></span></h4>
+    </div>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title"><span class="glyphicon glyphicon-tag" aria-hidden="true"></span> Recent Tags</h3>
+    </div>
+    <div id="recentTags" class="panel-body"></div>
+  </div>
+
+
+</div>
+
+<div class="modal fade" id="askQuestion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <form action="" method="post" id="id-create-question-form">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Ask Question</h4>
+                    </div>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                        {% bootstrap_form form %}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <input type="submit" class="btn btn-primary" value="Ask Question">
+                    </div>
+                </form>
+            </div>
+        </div>
+</div>
+
+<div class="modal fade" id="detailApiQuestionModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="detailApiQuestionTitle"></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="">
+                        <h4><label class="control-label" for="id_detail_author">Author:</label>
+                        <span id="id_detail_author"></span></h4>
+                    </div>
+                    <div class="">
+                        <h4><label class="control-label" for="id_detail_tags">Tags:</label>
+                        <span id="id_detail_tags"></span><h4>
+                    </div>
+                    <div class="">
+                        <h4><label class="control-label" for="id_detail_likes">Likes:</label>
+                        <span id="id_detail_likes"></span><h4>
+                    </div>
+                    <hr>
+                    <div class="">
+                        <h5><span id="id_detail_text"></span><h5>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a id="see-answers" href="" class="btn btn-primary">See Answers</a>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'js/question.js' %}"></script>
+<script>
+
+var url_data_questions ="{% url 'qapp:api:list-questions-api' %}";
+var url_data_likes = "{% url 'qapp:api:list-liked-questions-api' %}";
+var url_data_unans =  "{% url 'qapp:api:list-unanswered-questions-api' %}";
+var url_ask_question =  "{% url 'qapp:api:create-question-api' %}";
+var url_next = "";
+var url_previous = "";
+
+</script>
+{% endblock %}

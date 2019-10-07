@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 staticfiles %}
+
+{% block wrapper %}
+    <!-- Main Header -->
+    <header class="main-header">
+        {% block header %}
+            {% include "header_navbar.html" %}
+        {% endblock header %}
+    </header>
+    <!-- End Main Header -->
+    <!-- =============================================== -->
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        {% block content_wrapper %}
+            <!-- Main content -->
+            <section class="content">
+                {% block content %}{% endblock content %}
+            </section><!-- /.content -->
+        {% endblock content_wrapper %}
+    </div><!-- /.content-wrapper -->
+    <!-- End Content Wrapper -->
+    <!-- =============================================== -->
+
+    <!-- Main Footer -->
+    {% block footer %}
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Developed by Andreina Marcano</a></b>
+            </div>
+            {% block footer_copyright %}
+                <strong>Copyright &copy; {% now "Y" %} CLIENT.</strong> All rights reserved.
+            {% endblock footer_copyright %}
+        </footer>
+    {% endblock footer %}
+    <!-- End Main Footer -->
+    <!-- =============================================== -->
+
+{% endblock wrapper %}
+

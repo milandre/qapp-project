@@ -1,0 +1,46 @@
+{% load bootstrap3 staticfiles %}
+<!-- Header Navbar -->
+<nav class="navbar navbar-inverse navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href={% url "home" %}>QAPP</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          {% if user.is_authenticated %}
+          <ul class="nav navbar-nav navbar-right">
+              <!-- User Account: style can be found in dropdown.less -->
+              <li class="dropdown user user-menu">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img src={% static "images/users/default.png" %} class="user-image" alt="User Image">
+                  {% if user.first_name %}
+                  <span class="hidden-xs">{{ user.first_name }} {{ user.last_name }}</span>
+                  {% else %}
+                  <span class="hidden-xs">{{ user.username }}</span>
+                  {% endif %}
+                </a>
+                <ul class="dropdown-menu">
+                  <!-- User image -->
+                  <li class="user-header">
+                    <img src={% static "images/users/default.png" %}  alt="User Image">
+                    <p>
+                      {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}
+                      {% else %}{{ user.username }}{% endif %}
+                      <small>Member since {{ user.date_joined|date:"j/m/Y" }}</small>
+                    </p>
+                  </li>
+                  <!-- Menu Footer-->
+                  <li class="user-footer">
+                    <div class="pull-right">
+                      <a href={% url "users:logout" %} class="btn btn-default btn-flat">Logout</a>
+                    </div>
+                  </li>
+          </ul>
+          {% else %}
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href={% url "users:register" %}>Sign Up</a></li>
+            <li><a href={% url "users:login" %}>Login</a></li>
+          </ul>
+          {% endif %}
+        </div><!--/.nav-collapse -->
+       </div>
+</nav><!--/.nav -->

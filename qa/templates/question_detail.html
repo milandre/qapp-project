@@ -1,0 +1,193 @@
+{% extends 'layout.html' %}
+{% load bootstrap3 staticfiles %}
+
+{% block content %}
+
+<div class="pull-right">
+    <span id="error-add-alert" class="alert alert-error alert-dismissible fade in"
+     style="margin-right: 5px; display: none;">
+            Error trying to create a Question. Please, try again
+    </span>
+</div>
+
+<div class="box box-widget">
+    <div class="box-header with-border">
+        <div class="user-block">
+            <img class="img-circle" src={% static 'images/users/default.png' %} alt="User Image">
+                <span class="username"><h4>{{ question.author.username }}</h4></span>
+                <span class="description">{{ question.pub_date }}
+                {% if question.closed %}
+            		<span class="label pull-right bg-orange">CLOSED QUESTION</span>
+	            {% else %}
+	            	<span class="label pull-right bg-blue">OPEN QUESTION</span>
+	            {% endif%}
+	            </span>
+        </div>
+
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+              <!-- post text -->
+            <p>{{ question.question_text }}</p>
+
+            <hr>
+            <!-- Social sharing buttons -->
+            <span><i class="fa fa-thumbs-o-up"></i> Like</span>
+
+            </span>
+            <span id="question-info" class="pull-right text-muted">{{ question.likes }} likes - {{ question.answers.count }} answers</span>
+    </div>
+    <!-- /.box-body -->
+
+    <div id="box-answers" class="box-footer box-comments">
+
+    	{% if question.answers.count > 0 %}
+
+        {% for answer in question.answers.all %}
+        <div class="box-comment">
+            <!-- User image -->
+            <img class="img-circle img-sm" src={% static 'images/users/default.png' %} alt="User Image">
+
+                <div class="comment-text">
+                      <span class="username">
+                        {{ answer.author.username }}
+                        <span class="text-muted pull-right">{{ answer.pub_date|date:"m-j-Y H:m" }}</span>
+                      </span><!-- /.username -->
+                  {{ answer.answer_text}}
+                </div>
+                <!-- /.comment-text -->
+        </div>
+        <!-- /.box-comment -->
+        {% endfor %}
+
+        {% endif %}
+
+    </div>
+
+    <div class="box-footer box-comments">
+        {% if user.is_authenticated and not question.closed %}
+        <!-- /.box-footer -->
+            <div id="answer-box" class="box-footer">
+              <form id="id-create-answer-form" action="" method="post">
+                <img class="img-responsive img-circle img-sm" src={% static 'images/users/default.png' %} alt="Alt Text">
+                <!-- .img-push is used to add margin to elements next to floating images -->
+                <div class="img-push">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                  <!--{% comment %} <input type="text" class="form-control input-sm" placeholder="Press enter to post comment"> {% endcomment %}-->
+                </div>
+                <input type="submit" class="btn btn-primary pull-right" value="Answer">
+              </form>
+            </div>
+            <!-- /.box-footer -->
+        {% endif%}
+
+    </div>
+
+
+</div>
+
+
+<!--
+<div class="jumbotron color-neutral">
+  <small class="pull-right">Posted by {{ question.author.username }}, {{ question.pub_date }}</small>
+  <h3><cool>Q: </cool>{{ question.question_text }}</h3>
+  <p>
+    {% if user.is_authenticated %}
+  <a href="" class="btn btn-success"><span class="glyphicon glyphicon-thumbs-up" aria-hidden="true"></span></a>
+  <a href="" class="btn btn-danger"><span class="glyphicon glyphicon-thumbs-down" aria-hidden="true"></span></a>
+    {% endif %}
+    {% if question.closed %}
+    <p class="pull-right">This Question has been closed.</p>
+    {% else %}
+    {% if user.aunthenticated %}
+    <a class="btn btn-primary btn-sm pull-right" href="" role="button">Answer this Question!</a>
+    {% endif %}
+    {% endif %}
+  </p>
+</div>
+
+<div class="container">
+{% if question.answers.length > 0 %}
+
+
+  <h3>Answers</h3>
+  <hr/>
+
+    {% for answer in question.answers.all %}
+    <div class="row">
+      {% if user.is_authenticated %}
+      <div class ="col-md-1">
+        <div class="row">
+          <div class ="col-sm-1"><big class="pull-left"><b>{{ answer.likes }}</b></big></div>
+          <div class ="col-sm-1"><a class="btn btn-sm btn-success" data-toggle="tooltip" data-placement="top" title="Vote Up this answer" href=""><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></a> <a class="btn btn-sm btn-danger" data-toggle="tooltip" data-placement="bottom" title="Vote Down this answer" href=""><span class="glyphicon glyphicon-minus" aria-hidden="true"></span></a></div>
+        </div>
+      </div>
+      {% endif %}
+      <div class ="col-md-9">
+        <a href="" class="pull-right"><small><span class="glyphicon glyphicon-comment" aria-hidden="true"></span> Comment &nbsp;</small></a>
+
+        {% comment %}
+        {% if answer.likes > 0 %}
+        <div id="ans" class="alert alert-primary" role="alert">{{ answer.answer_text|markdown }}</div>
+        {% elif answer.likes == 0 %}
+        <div id="ans" class="alert alert-primary" role="alert">{{ answer.answer_text|markdown }}</div>
+        {% else %}
+        <div id="ans" class="alert alert-primary" role="alert">{{ answer.answer_text|markdown }}</div>
+        {% endif %}
+        {% endcomment %}
+
+        {% if answer.comment_set %}
+          {% for comment in answer.comments.all %}
+          <p><b>{{ comment.comment_text }}</b><small>, <a href="}">{{ comment.author.username }}</a> <div class="pull-right">{{ comment.pub_date }}</div></small></p>
+          <hr>
+          {% endfor %}
+        {% endif %}
+      </div>
+      <div class ="col-md-2">
+
+        <img class="pull-right" width="50px" height="50px" src="{% static "css/images/users/default.png" %}">
+
+        <p class="pull-right">- <b><a href="">{{ answer.author_data.username }}</a></b></p>
+      </div>
+    </div>
+  <hr>
+    {% endfor %}
+
+<div class="pagination">
+  <span class="step-links">
+    {% if answers.has_previous %}
+    <a href="?page={{ answers.previous_page_number }}">< Previous | </a>
+    {% endif %}
+
+    <span class="current">
+      Page {{ answers.number }} of {{ answers.paginator.num_pages }}.
+    </span>
+
+    {% if answers.has_next %}
+    <a href="?page={{ answers.next_page_number }}"> | Next ></a>
+    {% endif %}
+  </span>
+</div>
+
+{% else %}
+	{% if user.is_authenticated %}
+	<img class="pull-right" src="{% static "qa/question.jpg" %}" alt="question"/>
+	<center><h2>This question is still open, <a href="" role="button">Write answer!</a></h2></center>
+	{% endif %}
+{% endif %}
+</div>
+</div>
+ -->
+ {% endblock %}
+
+{% block extrajs %}
+<script src="{% static 'js/answer.js' %}"></script>
+<script>
+
+var url_answer_question =  "{% url 'qapp:api:create-answer-api' %}";
+var question = "{{ question.id }}";
+var static_url_image = "{% static 'images/users/default.png' %}";
+
+</script>
+{% endblock %}
